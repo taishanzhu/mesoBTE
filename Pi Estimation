@@ -1,0 +1,21 @@
+import random
+import math
+
+def pi_estimation():
+    area_of_circle = 0
+    area_of_square = 0
+    pi = 0
+    def verify(a,b):
+        if((a**2)+(b**2)<1):
+            return True
+        else:
+            return False
+    for i in range (0,999999):
+        a = random.random()
+        b = random.random()
+        if(verify(a,b)==1):
+                   area_of_circle += 1
+        area_of_square += 1
+    pi = 4.0*area_of_circle/area_of_square
+    return pi
+print (pi_estimation())
