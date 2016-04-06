@@ -1,0 +1,133 @@
+import numpy as np
+import random
+import re
+import matplotlib.pyplot as plt
+import matplotlib.tri as tri
+import randomStack as rng
+
+sigma = 0.5
+probability_scatter = 1     #don't know why this isn't working - nothing is scattering even when set to 1
+
+class Particle():
+    def __init__(self,xpos=0, ypos=0, vx=0, vy=0):
+        self.xpos = boxdiststack.draw()
+        self.ypos = boxdiststack.draw()
+        self.vx = boxdist2stack.draw()
+        self.vy = boxdist2stack.draw()
+
+class Material():
+    # we will need to change this
+    def __init__(self):
+        self.e_array = []
+        for i in range(0, 11):   #initial_amount of e (user_input)
+            a = Particle()
+            self.e_array.append(a)
+
+    def electron_amount(self, t):
+        y = int(10*np.exp(-t))
+        return y
+
+    def electron_input(self, t):
+        # self.e_array = []
+        for i in range(self.electron_amount(t)):
+            b = Particle()
+            self.e_array.append(b)
+
+    def scatter(self, dt):
+        # updating position
+        for i in range(len(self.e_array)):
+            self.e_array[i].xpos = self.e_array[i].xpos + self.e_array[i].vx * dt
+            self.e_array[i].ypos = self.e_array[i].ypos + self.e_array[i].vy * dt
+        # bouncing back
+            if self.e_array[i].ypos >= 1:
+                dy = self.e_array[i].ypos - 1
+                self.e_array[i].ypos = self.e_array[i].ypos - 2*dy
+                self.e_array[i].vy = - self.e_array[i].vy
+            elif self.e_array[i].ypos <=0:
+                dy = 0 - self.e_array[i].ypos
+                self.e_array[i].ypos = self.e_array[i].ypos + 2*dy
+                self.e_array[i].vy = - self.e_array[i].vy
+        # update velocity
+        length = int(len(self.e_array)* probability_scatter)
+        for i in range(length):
+            random_index = random.randint(0, len(self.e_array) - 1)
+            self.e_array[random_index].xv = reflectdiststack.draw()
+            self.e_array[random_index].yv = reflectdiststack.draw()
+        # passing through if x<0 or x>1
+        self.e_array = list(filter(lambda x: (x.xpos < 1) and (x.xpos > 0), self.e_array))
+
+
+
+# Outsources computation to 'triangle'.
+os.system('triangle example.poly')
+nodefile = open('example.node','rw').readlines()
+elefile = open('example.ele','rw').readlines()
+
+# Declares arrays for nodes and triangle definitions.
+tripts = np.empty([1,3]) # x coord, y coord, boundary?
+tridefs = np.empty([1,3]) # point 1, point 2, point 3
+
+# Parses the output files.
+del nodefile[0]
+for linea in nodefile:
+    linea = re.split(' +',linea)
+    del linea[0]
+    tripts = np.append(tripts,[[float(linea[1]),float(linea[2]),float(linea[4])]],0)
+tripts = np.delete(tripts, 0, 0)
+
+del elefile[0]
+for linea in elefile:
+    linea = re.split(' +',linea)
+    del linea[0]
+    tridefs = np.append(tridefs,[[float(linea[1]),float(linea[2]),float(linea[3])]],0)
+tridefs = np.delete(tridefs, 0, 0)
+
+boxdiststack = rng.randomStack(1000,'boxdist.txt')      #square distribution for 0 to .1 for position
+boxdist2stack = rng.randomStack(1000,'boxdist2.txt')        #square distribution for 0 to 1 for velocities
+reflectdiststack = rng.randomStack(1000,'reflectdist.txt')  #square distribution for -1 to 0 for scattering
+
+#displaying the distributions from the 'decks'
+q = np.zeros(1000)
+z = np.zeros(1000)
+y = np.zeros(1000)
+for i in range(1000):
+    q[i] = boxdiststack.draw()
+    z[i] = boxdist2stack.draw()
+    y[i] = reflectdiststack.draw()
+fig2 = plt.figure(2)
+h2 = plt.hist(q,np.linspace(-1,1,100),normed=1)
+fig2.suptitle('position (x and y pos)')
+fig3 = plt.figure(3)
+h3 = plt.hist(z,np.linspace(-1,1,100),normed=1)
+fig3.suptitle('velocity (vx and vy)')
+fig4 = plt.figure(4)
+h4 = plt.hist(y,np.linspace(-1,1,100),normed=1)
+fig4.suptitle('scattering (vx and vy)')
+fig2.show()
+fig3.show()
+fig4.show()
+u = input("enter any number to continue to the simulation")
+plt.close('all')
+
+#simulation time! notice all electrons start in bottom left, and go towards upper right of window as predicted by distributions
+t = 0
+dt = 0.1
+simulation_duration = 5
+mat = Material()
+fig = plt.figure(1)
+while t <= simulation_duration:
+    fig.clf()
+    ax = fig.gca()  
+    ax.set_autoscale_on(False)
+    ax.axis([0,1,0,1])
+    for i in range(len(mat.e_array)):
+        ax.plot(mat.e_array[i].xpos, mat.e_array[i].ypos, 'ro')
+        ax.plot([mat.e_array[i].xpos, mat.e_array[i].xpos + mat.e_array[i].vx*dt], [mat.e_array[i].ypos, mat.e_array[i].ypos + mat.e_array[i].vy*dt], c='b', ls='-')
+    t = t + dt
+    mat.electron_input(t)
+    mat.scatter(dt)
+    fig.show()
+    u = input("enter any number to time step")
+    dt=u;
+    
+#   https://www.cs.cmu.edu/~quake/triangle.html
