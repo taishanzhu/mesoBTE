@@ -1,16 +1,17 @@
 import numpy as np
+import random
+import re
+import io
+import os
 from math import pi
 from math import sin
 from math import cos
-import io
-import os
-import re
 
 # Sets up the file and the arrays.
 os.system('touch example.poly')
 fila = open('example.poly','w')
 tripts = [[0,0,0,0]]
-edgedef = [[0,0,0]]
+edgedef = [[0,0,0,0]]
 holedef = [[0,0,0]]
 
 # Begins taking input about polygons.
@@ -29,7 +30,7 @@ while(data != ""):
     for ang in range(0,num):
         tripts.append([l+ang+1,equis+cos(2*pi*ang/num),igriega+sin(2*pi*ang/num),0])
     for ang in range(0,num):
-        edgedef.append([l+ang+1,l+ang+1,l+((ang+2) if (ang!=num-1) else 1)])
+        edgedef.append([l+ang+1,l+ang+1,l+((ang+2) if (ang!=num-1) else 1),0])
     holedef.append([i,float(data[0]),float(data[1])])
     i += 1
     l += num
@@ -51,8 +52,8 @@ for k in range(0,len(tripts)):
     file.append(str(int(tripts[k][0]))+" "+str(tripts[k][1])+" "+str(tripts[k][2])+" "+str(int(tripts[k][3]))+'\n')
 file.append(str(len(edgedef))+" 1\n")
 for k in range(0,len(edgedef)):
-    file.append(str(int(edgedef[k][0]))+" "+str(int(edgedef[k][1]))+" "+str(int(edgedef[k][2]))+'\n')
-file.append(str(len(holedef)-1)+"\n")
+    file.append(str(int(edgedef[k][0]))+" "+str(int(edgedef[k][1]))+" "+str(int(edgedef[k][2]))+" "+str(int(edgedef[k][3]))+'\n')
+file.append(str(len(holedef))+"\n")
 for k in range(0,len(holedef)):
     file.append(str(int(holedef[k][0]))+" "+str(holedef[k][1])+" "+str(holedef[k][2])+'\n')
 fila.writelines(file)
