@@ -87,10 +87,10 @@ del neighfile[0]
 for linea in neighfile:
     linea = re.split(' +',linea)
     del neighfile[0]
-    tridefs.append([int(linea[1]),int(linea[2]),int(linea[3])])
+    neighdefs.append([int(linea[1]),int(linea[2]),int(linea[3])])
     
 del edgefile[0]
 for linea in edgefile:
     linea = re.split(' +',linea)
     del linea[0]
-    tridefs.append([float(linea[1]),float(linea[2]),int(linea[3])])
+    edgepts.append([float(linea[1]),float(linea[2]),int(linea[3])])
