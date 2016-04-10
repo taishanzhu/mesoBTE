@@ -1,0 +1,16 @@
+import numpy as np
+from matplotlib import pyplot as plt
+from scipy.interpolate import UnivariateSpline
+
+def randompdf(m=100000, n=n):
+    q = m/15
+    s = np.random.normal(size=m)
+    p, x = np.histogram(s, bins=n)
+    x = (1/2)*(x[1] - x[0]) + x[:-1]
+    f = UnivariateSpline(x, p, s=q)
+    plt.plot(x, f(x))
+    plt.title ("Randomly Generated PDF")
+    plt.ylabel ("Probability Density Function")
+    plt.xlabel ("x")
+    plt.show()
+randompdf()
