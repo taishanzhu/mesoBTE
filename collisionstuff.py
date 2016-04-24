@@ -36,6 +36,10 @@ intpty = intersectiony(xpos,ypos,xpos+vx*dt,ypos+vx*dt,pointsArray[edge[x][0]][0
 timebeforecollision = abs((intptx-xpos)/vx*dt)
 timeaftercollision = dt - timebeforecollision
 
+# YOU HAVE TO DO THIS FIRST
+xpos = xpos + timebeforecollision*vx
+ypos = ypos + timebeforecollision*vy
+# THEN IMMEDIATELY AFTER
 velvec = [vx,vy]
 dpvec = [dp[0],dp[1]]
 dpvecmag = sqrt((dpvec[0])*(dpvec[0])+(dpvec[1])*(dpvec[1]))
@@ -47,5 +51,6 @@ perp = [velvec[0]-parallel[0],velvec[1]-parallel[1]]
 # flip perpendicular component
 newvec = [parallel[0]-perp[0],parallel[1]-perp[1]]
 print newvec
-
-# NOW ADJUST THE POSITION USING THE NEW VX/VY AND REPLACING 'DT' with 'TIMEAFTERCOLLISION'
+# AND THEN
+xpos = xpos + timeaftercollision*newvec[0]
+ypos = ypos + timeaftercollision*newvec[1]
