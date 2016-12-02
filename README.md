@@ -1,2 +1,2 @@
 # mesoBTE
-Monte Carlo Solution of Phonons and Electrons for thermoelectrics
+Monte Carlo Solutions of Phonons and Electrons for thermoelectrics
